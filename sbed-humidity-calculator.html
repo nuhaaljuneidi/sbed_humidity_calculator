@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBED Lab - Psychrometric Tools | Dr. Nuha Aljuneidi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+        }
+        
+        .tab-active {
+            background: linear-gradient(to right, #2563eb, #059669);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-inactive {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+        
+        .tab-inactive:hover {
+            background: #e5e7eb;
+        }
+        
+        .input-field {
+            border: 2px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .input-error {
+            border-color: #ef4444 !important;
+        }
+        
+        .btn-calculate {
+            background: linear-gradient(to right, #2563eb, #059669);
+            color: white;
+            font-weight: 700;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-calculate:hover {
+            background: linear-gradient(to right, #1d4ed8, #047857);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen p-4">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex-1">
+                    <div class="flex items-center gap-4 mb-3">
+                        <!-- SBED Lab Logo -->
+                        <svg viewBox="0 0 80 80" class="w-20 h-20">
+                            <!-- Blue connection network -->
+                            <circle cx="12" cy="25" r="2.5" fill="#3b82f6"/>
+                            <circle cx="20" cy="15" r="2" fill="#60a5fa"/>
+                            <circle cx="25" cy="22" r="1.5" fill="#3b82f6"/>
+                            <line x1="12" y1="25" x2="20" y2="15" stroke="#3b82f6" stroke-width="1"/>
+                            <line x1="20" y1="15" x2="25" y2="22" stroke="#60a5fa" stroke-width="1"/>
+                            <line x1="12" y1="25" x2="25" y2="22" stroke="#3b82f6" stroke-width="0.5"/>
+                            
+                            <!-- Building -->
+                            <rect x="30" y="20" width="28" height="40" fill="#1e3a8a" stroke="#1e40af" stroke-width="1.5"/>
+                            
+                            <!-- Windows (3x4 grid) -->
+                            <rect x="34" y="24" width="4" height="5" fill="#60a5fa" opacity="0.9"/>
+                            <rect x="41" y="24" width="4" height="5" fill="#60a5fa" opacity="0.9"/>
+                            <rect x="48" y="24" width="4" height="5" fill="#60a5fa" opacity="0.9"/>
+                            <rect x="34" y="33" width="4" height="5" fill="#60a5fa" opacity="0.9"/>
+                            <rect x="41" y="33" width="4" height="5" fill="#60a5fa" opacity="0.9"/>
+                            <rect x="48" y="33" width="4" height="5" fill="#60a5fa" opacity="0.9"/>
+                            <rect x="34" y="42" width="4" height="5" fill="#60a5fa" opacity="0.9"/>
+                            <rect x="41" y="42" width="4" height="5" fill="#60a5fa" opacity="0.9"/>
+                            <rect x="48" y="42" width="4" height="5" fill="#60a5fa" opacity="0.9"/>
+                            <rect x="34" y="51" width="4" height="5" fill="#60a5fa" opacity="0.9"/>
+                            <rect x="41" y="51" width="4" height="5" fill="#60a5fa" opacity="0.9"/>
+                            <rect x="48" y="51" width="4" height="5" fill="#60a5fa" opacity="0.9"/>
+                            
+                            <!-- Green waves -->
+                            <path d="M 5 62 Q 15 58 25 62 T 45 62 T 65 62 T 85 62" stroke="#10b981" stroke-width="2" fill="none"/>
+                            <path d="M 5 66 Q 15 62 25 66 T 45 66 T 65 66 T 85 66" stroke="#059669" stroke-width="2" fill="none"/>
+                            <path d="M 5 70 Q 15 66 25 70 T 45 70 T 65 70 T 85 70" stroke="#10b981" stroke-width="1.5" fill="none" opacity="0.7"/>
+                            
+                            <!-- Green dots -->
+                            <circle cx="68" cy="35" r="2" fill="#10b981"/>
+                            <circle cx="72" cy="28" r="1.5" fill="#059669"/>
+                            <circle cx="65" cy="45" r="1.8" fill="#10b981"/>
+                        </svg>
+                        
+                        <div>
+                            <h1 class="text-4xl font-bold text-blue-900">SBED LAB</h1>
+                            <p class="text-sm text-gray-600 font-semibold">Smart Building Energy Dynamics Lab</p>
+                            <p class="text-xs text-blue-700 font-medium mt-1">Lawrence Technological University</p>
+                        </div>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-700 mb-1">Interactive Psychrometric Tools</h2>
+                    <p class="text-sm text-gray-600 font-medium">Dr. Nuha Aljuneidi</p>
+                </div>
+                <div class="flex flex-col items-center gap-3">
+                    <svg class="w-16 h-16 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Selector -->
+        <div class="bg-white rounded-lg shadow-lg p-2 mb-6 flex gap-2">
+            <button id="humidityTab" class="tab-active flex-1 py-3 px-4 rounded-lg font-semibold transition-all">
+                <span class="inline-block">💧</span> Humidity Calculator
+            </button>
+            <button id="compositionTab" class="tab-inactive flex-1 py-3 px-4 rounded-lg font-semibold transition-all">
+                <span class="inline-block">🌫️</span> Air Composition Calculator
+            </button>
+        </div>
+
+        <!-- HUMIDITY CALCULATOR -->
+        <div id="humidityCalculator" class="calculator-section">
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Input Section -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Calculate Humidity</h3>
+                    <p class="text-sm text-gray-600 mb-4">Input dry-bulb and dew-point temperatures to calculate humidity properties</p>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Dry-Bulb Temperature</label>
+                        <div class="flex gap-2">
+                            <input type="number" id="dryBulbTemp" value="25" class="input-field flex-1">
+                            <select id="dryBulbUnit" class="input-field">
+                                <option>Celsius</option>
+                                <option>Fahrenheit</option>
+                                <option>Kelvin</option>
+                            </select>
+                        </div>
+                        <p id="dryBulbError" class="text-red-500 text-sm mt-1 hidden"></p>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Dew-Point Temperature</label>
+                        <div class="flex gap-2">
+                            <input type="number" id="dewPointTemp" value="15" class="input-field flex-1">
+                            <select id="dewPointUnit" class="input-field">
+                                <option>Celsius</option>
+                                <option>Fahrenheit</option>
+                                <option>Kelvin</option>
+                            </select>
+                        </div>
+                        <p id="dewPointError" class="text-red-500 text-sm mt-1 hidden"></p>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Pressure</label>
+                        <div class="flex gap-2">
+                            <input type="number" id="humidityPressure" value="101.325" class="input-field flex-1">
+                            <select id="humidityPressureUnit" class="input-field">
+                                <option selected>K Pascal</option>
+                                <option>Atmosphere</option>
+                                <option>Pascal</option>
+                            </select>
+                        </div>
+                        <p id="humidityPressureError" class="text-red-500 text-sm mt-1 hidden"></p>
+                    </div>
+
+                    <button onclick="calculateHumidity()" class="btn-calculate">
+                        Calculate Humidity
+                    </button>
+                    
+                    <button onclick="toggleFormulas('humidity')" class="w-full mt-3 bg-gray-100 text-gray-700 font-semibold py-2 rounded-lg hover:bg-gray-200 transition-all">
+                        <span id="humidityFormulaToggle">Show</span> Formulas
+                    </button>
+                </div>
+
+                <!-- Results Section -->
+                <div class="space-y-6">
+                    <div id="humidityResults" class="hidden">
+                        <div class="result-card">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Humidity Properties</h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                                    <span class="font-semibold text-gray-700">Relative Humidity</span>
+                                    <span id="rhResult" class="text-xl font-bold text-blue-600"></span>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                                    <span class="font-semibold text-gray-700">Absolute Humidity</span>
+                                    <span id="ahResult" class="text-xl font-bold text-green-600"></span>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                                    <span class="font-semibold text-gray-700">Specific Humidity</span>
+                                    <span id="shResult" class="text-xl font-bold text-purple-600"></span>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                    <span class="font-semibold text-gray-700">Dew Point</span>
+                                    <span id="dpResult" class="text-xl font-bold text-gray-600"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="humidityVisualization"></div>
+
+                        <div class="result-card">
+                            <h3 class="text-lg font-bold text-gray-800 mb-3">HVAC Context</h3>
+                            <div class="space-y-2 text-sm text-gray-700">
+                                <p><strong>Comfortable Range:</strong> 30-50% RH</p>
+                                <p><strong>ASHRAE Standard 55:</strong> 30-60% RH for thermal comfort</p>
+                                <p id="humidityWarning"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="humidityFormulas" class="result-card hidden">
+                        <h3 class="text-lg font-bold text-gray-800 mb-3">Calculation Steps</h3>
+                        <div class="space-y-3 text-sm text-gray-700">
+                            <div class="p-3 bg-gray-50 rounded">
+                                <p class="font-semibold mb-1">1. Saturation Pressures (Antoine)</p>
+                                <p class="font-mono text-xs">Psat = 10^(A - B/(C + T))</p>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded">
+                                <p class="font-semibold mb-1">2. Relative Humidity</p>
+                                <p class="font-mono text-xs">RH = (Pw / Psat_db) × 100</p>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded">
+                                <p class="font-semibold mb-1">3. Absolute Humidity</p>
+                                <p class="font-mono text-xs">AH = (Pw × M_H₂O) / (R × T)</p>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded">
+                                <p class="font-semibold mb-1">4. Specific Humidity</p>
+                                <p class="font-mono text-xs">ω = 0.622 × (Pw / (P - Pw))</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AIR COMPOSITION CALCULATOR -->
+        <div id="compositionCalculator" class="calculator-section hidden">
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Input Section -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Calculate Air Composition</h3>
+                    <p class="text-sm text-gray-600 mb-4">Input temperature, humidity, and pressure to find mass fractions</p>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Temperature</label>
+                        <div class="flex gap-2">
+                            <input type="number" id="temperature" value="25" class="input-field flex-1">
+                            <select id="tempUnit" class="input-field">
+                                <option>Celsius</option>
+                                <option>Fahrenheit</option>
+                                <option>Kelvin</option>
+                            </select>
+                        </div>
+                        <p id="tempError" class="text-red-500 text-sm mt-1 hidden"></p>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Relative Humidity (%)</label>
+                        <input type="number" id="relativeHumidity" value="60" min="0" max="100" class="input-field w-full">
+                        <p id="rhError" class="text-red-500 text-sm mt-1 hidden"></p>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Pressure</label>
+                        <div class="flex gap-2">
+                            <input type="number" id="pressure" value="1" class="input-field flex-1">
+                            <select id="pressureUnit" class="input-field">
+                                <option>Atmosphere</option>
+                                <option>Pascal</option>
+                                <option>K Pascal</option>
+                            </select>
+                        </div>
+                        <p id="pressureError" class="text-red-500 text-sm mt-1 hidden"></p>
+                    </div>
+
+                    <div id="compositionGeneralError" class="mb-4 p-3 bg-red-50 border border-red-300 rounded-lg hidden">
+                        <p class="text-red-700 text-sm"></p>
+                    </div>
+
+                    <button onclick="calculateComposition()" class="btn-calculate">
+                        Calculate Composition
+                    </button>
+                    
+                    <button onclick="toggleFormulas('composition')" class="w-full mt-3 bg-gray-100 text-gray-700 font-semibold py-2 rounded-lg hover:bg-gray-200 transition-all">
+                        <span id="compositionFormulaToggle">Show</span> Formulas
+                    </button>
+                </div>
+
+                <!-- Results Section -->
+                <div class="space-y-6">
+                    <div id="compositionResults" class="hidden">
+                        <div class="result-card">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">Mass Fractions</h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                                    <span class="font-semibold text-gray-700">Water (H₂O)</span>
+                                    <span id="h2oResult" class="text-xl font-bold text-blue-600"></span>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                    <span class="font-semibold text-gray-700">Nitrogen (N₂)</span>
+                                    <span id="n2Result" class="text-xl font-bold text-gray-600"></span>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-red-50 rounded-lg">
+                                    <span class="font-semibold text-gray-700">Oxygen (O₂)</span>
+                                    <span id="o2Result" class="text-xl font-bold text-red-600"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="compositionVisualization"></div>
+
+                        <div class="result-card">
+                            <h3 class="text-lg font-bold text-gray-800 mb-3">Applications</h3>
+                            <div class="space-y-2 text-sm text-gray-700">
+                                <p><strong>CFD Simulations:</strong> Use these mass fractions as input for fluid dynamics analysis</p>
+                                <p><strong>Combustion Analysis:</strong> Essential for calculating air-fuel ratios</p>
+                                <p><strong>HVAC Design:</strong> Understand air composition for system sizing</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="compositionFormulas" class="result-card hidden">
+                        <h3 class="text-lg font-bold text-gray-800 mb-3">Calculation Steps</h3>
+                        <div class="space-y-3 text-sm text-gray-700">
+                            <div class="p-3 bg-gray-50 rounded">
+                                <p class="font-semibold mb-1">1. Saturation Pressure (Antoine)</p>
+                                <p class="font-mono text-xs">log₁₀(Psat) = A - (B / (C + T))</p>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded">
+                                <p class="font-semibold mb-1">2. Vapor Pressure</p>
+                                <p class="font-mono text-xs">Pw = (RH / 100) × Psat</p>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded">
+                                <p class="font-semibold mb-1">3. Mole Fractions (Dalton's Law)</p>
+                                <p class="font-mono text-xs">y_H₂O = Pw / P</p>
+                                <p class="font-mono text-xs">y_N₂ = 0.79 × (1 - y_H₂O)</p>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded">
+                                <p class="font-semibold mb-1">4. Mass Fractions</p>
+                                <p class="font-mono text-xs">mf = (y × M) / M_mixture</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Constants
+        const ANTOINE = { A: 5.40221, B: 1838.675, C: -31.737 };
+        const MOLAR_MASS = { H2O: 18.015, N2: 28.014, O2: 31.998 };
+
+        // Unit Conversions
+        function toKelvin(temp, unit) {
+            const t = parseFloat(temp);
+            if (unit === 'Celsius') return t + 273.15;
+            if (unit === 'Fahrenheit') return (t - 32) * 5/9 + 273.15;
+            return t;
+        }
+
+        function toCelsius(temp, unit) {
+            const t = parseFloat(temp);
+            if (unit === 'Kelvin') return t - 273.15;
+            if (unit === 'Fahrenheit') return (t - 32) * 5/9;
+            return t;
+        }
+
+        function toAtm(press, unit) {
+            const p = parseFloat(press);
+            if (unit === 'Pascal') return p / 101325;
+            if (unit === 'K Pascal') return p / 101.325;
+            return p;
+        }
+
+        function toKPa(press, unit) {
+            const p = parseFloat(press);
+            if (unit === 'Pascal') return p / 1000;
+            if (unit === 'Atmosphere') return p * 101.325;
+            return p;
+        }
+
+        function calcSaturationPressure(tempK) {
+            return Math.pow(10, ANTOINE.A - (ANTOINE.B / (ANTOINE.C + tempK))) / 0.98692;
+        }
+
+        // Tab Switching
+        document.getElementById('humidityTab').addEventListener('click', function() {
+            showCalculator('humidity');
+        });
+
+        document.getElementById('compositionTab').addEventListener('click', function() {
+            showCalculator('composition');
+        });
+
+        function showCalculator(type) {
+            if (type === 'humidity') {
+                document.getElementById('humidityCalculator').classList.remove('hidden');
+                document.getElementById('compositionCalculator').classList.add('hidden');
+                document.getElementById('humidityTab').className = 'tab-active flex-1 py-3 px-4 rounded-lg font-semibold transition-all';
+                document.getElementById('compositionTab').className = 'tab-inactive flex-1 py-3 px-4 rounded-lg font-semibold transition-all';
+            } else {
+                document.getElementById('humidityCalculator').classList.add('hidden');
+                document.getElementById('compositionCalculator').classList.remove('hidden');
+                document.getElementById('compositionTab').className = 'tab-active flex-1 py-3 px-4 rounded-lg font-semibold transition-all';
+                document.getElementById('humidityTab').className = 'tab-inactive flex-1 py-3 px-4 rounded-lg font-semibold transition-all';
+            }
+            clearErrors();
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.text-red-500').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+            document.getElementById('compositionGeneralError').classList.add('hidden');
+        }
+
+        function showError(id, message) {
+            const errorEl = document.getElementById(id + 'Error');
+            if (errorEl) {
+                errorEl.textContent = '⚠ ' + message;
+                errorEl.classList.remove('hidden');
+                document.getElementById(id).classList.add('input-error');
+            }
+        }
+
+        // Humidity Calculator
+        function calculateHumidity() {
+            clearErrors();
+            
+            const dryBulbTemp = parseFloat(document.getElementById('dryBulbTemp').value);
+            const dryBulbUnit = document.getElementById('dryBulbUnit').value;
+            const dewPointTemp = parseFloat(document.getElementById('dewPointTemp').value);
+            const dewPointUnit = document.getElementById('dewPointUnit').value;
+            const pressure = parseFloat(document.getElementById('humidityPressure').value);
+            const pressureUnit = document.getElementById('humidityPressureUnit').value;
+
+            let hasError = false;
+
+            // Validation
+            const tdbK = toKelvin(dryBulbTemp, dryBulbUnit);
+            const tdpK = toKelvin(dewPointTemp, dewPointUnit);
+            
+            if (isNaN(dryBulbTemp) || tdbK < 0) {
+                showError('dryBulbTemp', 'Invalid temperature');
+                hasError = true;
+            }
+            
+            if (isNaN(dewPointTemp) || tdpK < 0) {
+                showError('dewPointTemp', 'Invalid temperature');
+                hasError = true;
+            } else if (tdpK > tdbK) {
+                showError('dewPointTemp', 'Dewpoint cannot exceed dry-bulb temperature');
+                hasError = true;
+            }
+            
+            if (isNaN(pressure) || pressure <= 0) {
+                showError('humidityPressure', 'Pressure must be positive');
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            // Calculations
+            const pressKPa = toKPa(pressure, pressureUnit);
+            const pressAtm = pressKPa / 101.325;
+
+            const Psat_db = calcSaturationPressure(tdbK);
+            const Psat_dp = calcSaturationPressure(tdpK);
+            const Pw = Psat_dp;
+
+            const RH = (Pw / Psat_db) * 100;
+            const Pw_Pa = Pw * 101325;
+            const absoluteHumidity = (Pw_Pa * MOLAR_MASS.H2O) / (8.314 * tdbK);
+            const specificHumidity = 0.622 * (Pw / (pressAtm - Pw));
+
+            // Display Results
+            document.getElementById('rhResult').textContent = RH.toFixed(2) + '%';
+            document.getElementById('ahResult').textContent = absoluteHumidity.toFixed(3) + ' g/m³';
+            document.getElementById('shResult').textContent = (specificHumidity * 1000).toFixed(3) + ' g/kg';
+            document.getElementById('dpResult').textContent = toCelsius(tdpK, 'Kelvin').toFixed(2) + '°C';
+            
+            document.getElementById('humidityResults').classList.remove('hidden');
+            
+            // Warnings
+            let warning = '';
+            if (RH < 30) {
+                warning = '<span class="text-orange-600"><strong>⚠ Low humidity:</strong> May cause dry skin and static electricity</span>';
+            } else if (RH >= 70) {
+                warning = '<span class="text-red-600"><strong>⚠ High humidity:</strong> Risk of condensation and mold growth</span>';
+            }
+            document.getElementById('humidityWarning').innerHTML = warning;
+
+            // Visualization
+            createVisualization('humidityVisualization', RH);
+        }
+
+        // Composition Calculator
+        function calculateComposition() {
+            clearErrors();
+            
+            const temperature = parseFloat(document.getElementById('temperature').value);
+            const tempUnit = document.getElementById('tempUnit').value;
+            const relativeHumidity = parseFloat(document.getElementById('relativeHumidity').value);
+            const pressure = parseFloat(document.getElementById('pressure').value);
+            const pressureUnit = document.getElementById('pressureUnit').value;
+
+            let hasError = false;
+
+            // Validation
+            const tempK = toKelvin(temperature, tempUnit);
+            
+            if (isNaN(temperature) || tempK < 0) {
+                showError('temp', 'Invalid temperature');
+                hasError = true;
+            }
+            
+            if (isNaN(relativeHumidity) || relativeHumidity < 0 || relativeHumidity > 100) {
+                showError('rh', 'Humidity must be between 0-100%');
+                hasError = true;
+            }
+            
+            if (isNaN(pressure) || pressure <= 0) {
+                showError('pressure', 'Pressure must be positive');
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            // Calculations
+            const pressAtm = toAtm(pressure, pressureUnit);
+            const Psat = calcSaturationPressure(tempK);
+            const Pw = (relativeHumidity / 100) * Psat;
+
+            if (Pw > pressAtm) {
+                const errorDiv = document.getElementById('compositionGeneralError');
+                errorDiv.querySelector('p').textContent = '⚠ Vapor pressure exceeds total pressure - physically impossible conditions';
+                errorDiv.classList.remove('hidden');
+                document.getElementById('compositionResults').classList.add('hidden');
+                return;
+            }
+
+            const y_H2O = Pw / pressAtm;
+            const y_dry = 1 - y_H2O;
+            const y_N2 = 0.79 * y_dry;
+            const y_O2 = 0.21 * y_dry;
+
+            const M_mixture = (y_H2O * MOLAR_MASS.H2O) + (y_N2 * MOLAR_MASS.N2) + (y_O2 * MOLAR_MASS.O2);
+            const mf_H2O = (y_H2O * MOLAR_MASS.H2O / M_mixture) * 100;
+            const mf_N2 = (y_N2 * MOLAR_MASS.N2 / M_mixture) * 100;
+            const mf_O2 = (y_O2 * MOLAR_MASS.O2 / M_mixture) * 100;
+
+            // Display Results
+            document.getElementById('h2oResult').textContent = mf_H2O.toFixed(4) + '%';
+            document.getElementById('n2Result').textContent = mf_N2.toFixed(4) + '%';
+            document.getElementById('o2Result').textContent = mf_O2.toFixed(4) + '%';
+            
+            document.getElementById('compositionResults').classList.remove('hidden');
+
+            // Visualization
+            createVisualization('compositionVisualization', relativeHumidity);
+        }
+
+        // Create Visualization
+        function createVisualization(containerId, rh) {
+            let category, colorClass, bgClass, borderClass, level;
+            
+            if (rh < 30) {
+                level = 'Low';
+                colorClass = 'text-orange-600';
+                bgClass = 'bg-orange-50';
+                borderClass = 'border-orange-300';
+            } else if (rh < 50) {
+                level = 'Comfortable';
+                colorClass = 'text-green-600';
+                bgClass = 'bg-green-50';
+                borderClass = 'border-green-300';
+            } else if (rh < 70) {
+                level = 'Moderate';
+                colorClass = 'text-blue-600';
+                bgClass = 'bg-blue-50';
+                borderClass = 'border-blue-300';
+            } else {
+                level = 'High';
+                colorClass = 'text-red-600';
+                bgClass = 'bg-red-50';
+                borderClass = 'border-red-300';
+            }
+
+            const html = `
+                <div class="p-6 rounded-lg ${bgClass} border-2 ${borderClass}">
+                    <div class="text-center mb-4">
+                        <h3 class="text-2xl font-bold mb-2 ${colorClass}">${level} Humidity</h3>
+                        <p class="text-lg font-semibold">${rh.toFixed(1)}% Relative Humidity</p>
+                    </div>
+                    <svg viewBox="0 0 400 250" class="w-full h-48">
+                        <!-- Building -->
+                        <rect x="150" y="80" width="100" height="120" fill="#1e3a8a" stroke="#1e40af" stroke-width="2"/>
+                        
+                        <!-- Windows -->
+                        ${[0,1,2].map(row => 
+                            [0,1,2].map(col => 
+                                `<rect x="${165 + col * 25}" y="${95 + row * 35}" width="15" height="20" fill="#60a5fa" opacity="0.8"/>`
+                            ).join('')
+                        ).join('')}
+                        
+                        ${rh < 30 ? `
+                            <!-- Sun -->
+                            <circle cx="80" cy="60" r="25" fill="#fbbf24" opacity="0.8"/>
+                            ${[0,45,90,135,180,225,270,315].map(angle => 
+                                `<line x1="${80 + Math.cos(angle * Math.PI / 180) * 35}" 
+                                       y1="${60 + Math.sin(angle * Math.PI / 180) * 35}" 
+                                       x2="${80 + Math.cos(angle * Math.PI / 180) * 45}" 
+                                       y2="${60 + Math.sin(angle * Math.PI / 180) * 45}" 
+                                       stroke="#fbbf24" stroke-width="3" opacity="0.8"/>`
+                            ).join('')}
+                            <text x="200" y="230" text-anchor="middle" class="text-sm fill-current">Dry air - Low moisture content</text>
+                        ` : ''}
+                        
+                        ${rh >= 30 && rh < 50 ? `
+                            <!-- Comfortable droplets -->
+                            ${[1,2,3].map(i => 
+                                `<path d="M ${100 + i * 60} 50 Q ${95 + i * 60} 65 ${100 + i * 60} 75 Q ${105 + i * 60} 65 ${100 + i * 60} 50" fill="#10b981" opacity="0.6"/>`
+                            ).join('')}
+                            <text x="200" y="230" text-anchor="middle" class="text-sm fill-current">Comfortable conditions - Ideal range</text>
+                        ` : ''}
+                        
+                        ${rh >= 50 && rh < 70 ? `
+                            <!-- Moderate droplets -->
+                            ${[1,2,3,4,5].map(i => 
+                                `<path d="M ${70 + i * 40} ${30 + (i % 2) * 20} Q ${65 + i * 40} ${45 + (i % 2) * 20} ${70 + i * 40} ${55 + (i % 2) * 20} Q ${75 + i * 40} ${45 + (i % 2) * 20} ${70 + i * 40} ${30 + (i % 2) * 20}" fill="#3b82f6" opacity="0.7"/>`
+                            ).join('')}
+                            <text x="200" y="230" text-anchor="middle" class="text-sm fill-current">Moderate humidity - Getting muggy</text>
+                        ` : ''}
+                        
+                        ${rh >= 70 ? `
+                            <!-- High droplets and fog -->
+                            ${[1,2,3,4,5,6,7].map(i => 
+                                `<path d="M ${50 + i * 35} ${20 + (i % 3) * 15} Q ${45 + i * 35} ${35 + (i % 3) * 15} ${50 + i * 35} ${45 + (i % 3) * 15} Q ${55 + i * 35} ${35 + (i % 3) * 15} ${50 + i * 35} ${20 + (i % 3) * 15}" fill="#ef4444" opacity="0.8"/>`
+                            ).join('')}
+                            <ellipse cx="200" cy="180" rx="120" ry="30" fill="#94a3b8" opacity="0.4"/>
+                            <text x="200" y="230" text-anchor="middle" class="text-sm fill-current">High humidity - Saturated air</text>
+                        ` : ''}
+                        
+                        <!-- Green waves -->
+                        <path d="M 0 220 Q 50 210 100 220 T 200 220 T 300 220 T 400 220 L 400 250 L 0 250 Z" fill="#10b981" opacity="0.3"/>
+                        <path d="M 0 225 Q 50 215 100 225 T 200 225 T 300 225 T 400 225 L 400 250 L 0 250 Z" fill="#059669" opacity="0.3"/>
+                    </svg>
+                </div>
+            `;
+            
+            document.getElementById(containerId).innerHTML = html;
+        }
+
+        // Toggle Formulas
+        function toggleFormulas(type) {
+            const formulaDiv = document.getElementById(type + 'Formulas');
+            const toggleText = document.getElementById(type + 'FormulaToggle');
+            
+            if (formulaDiv.classList.contains('hidden')) {
+                formulaDiv.classList.remove('hidden');
+                toggleText.textContent = 'Hide';
+            } else {
+                formulaDiv.classList.add('hidden');
+                toggleText.textContent = 'Show';
+            }
+        }
+    </script>
+</body>
+</html>
