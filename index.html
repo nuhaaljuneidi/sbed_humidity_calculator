@@ -142,6 +142,43 @@
             font-style: normal;
         }
     </style>
+
+    <style id="professional-hvac-theme">
+      @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap');
+      :root{--hvac-ink:#102a36;--hvac-muted:#5c6f78;--hvac-line:#cfd9de;--hvac-panel:#ffffff;--hvac-bg:#eef3f5;--hvac-accent:#0f6f82;--hvac-accent-dark:#0a5060;--hvac-soft:#e3f0f3}
+      body.gradient-bg{font-family:'Manrope',sans-serif;background:var(--hvac-bg)!important;color:var(--hvac-ink);padding:0!important}
+      body.gradient-bg:before{content:"PSYCHROMETRIC ANALYSIS / HVAC DESIGN";display:block;background:#0d2732;color:#a8c3cc;font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.16em;padding:.75rem max(1.25rem,calc((100vw - 1120px)/2));}
+      .max-w-7xl{max-width:1120px!important;padding:2rem 1.25rem 4rem}
+      .bg-white{background:var(--hvac-panel)!important}
+      .shadow-lg{box-shadow:0 12px 32px rgba(16,42,54,.07)!important}
+      .rounded-lg{border-radius:.45rem!important}
+      .max-w-7xl>div:first-child{border:1px solid var(--hvac-line);box-shadow:none!important}
+      .max-w-7xl>div:first-child h1,.max-w-7xl>div:first-child h2{color:var(--hvac-ink)!important;letter-spacing:-.025em}
+      .max-w-7xl>div:first-child h2{font-size:1.35rem!important;font-weight:700!important}
+      .max-w-7xl>div:first-child svg{width:2rem!important;height:2rem!important;color:var(--hvac-accent)!important}
+      .max-w-7xl>div:nth-child(2){border:1px solid var(--hvac-line);box-shadow:none!important;padding:.3rem!important;background:#dfe7ea!important}
+      .tab-active{background:var(--hvac-ink)!important;color:white!important;box-shadow:none!important}
+      .tab-inactive{background:transparent!important;color:#4b6069!important}
+      #humidityTab,#compositionTab{border-radius:.3rem!important;letter-spacing:.01em;min-height:48px}
+      #humidityTab:hover,#compositionTab:hover{background:var(--hvac-accent-dark)!important;color:white!important}
+      .calculator-section .bg-white{border:1px solid var(--hvac-line);box-shadow:none!important}
+      h3{color:var(--hvac-ink)!important;letter-spacing:-.015em}
+      label,.font-semibold{color:#29434e!important}
+      input,select{border:1px solid #b9c7cd!important;border-radius:.3rem!important;background:#fbfcfc!important;color:var(--hvac-ink)!important;min-height:44px;box-shadow:inset 0 1px 2px rgba(16,42,54,.03)}
+      input:focus,select:focus{outline:3px solid rgba(15,111,130,.18)!important;border-color:var(--hvac-accent)!important}
+      button[onclick*="calculate"]{background:var(--hvac-accent)!important;color:white!important;border-radius:.3rem!important;box-shadow:none!important;min-height:46px}
+      button[onclick*="calculate"]:hover{background:var(--hvac-accent-dark)!important}
+      button{transition:background-color .2s ease,color .2s ease,transform .15s ease}
+      button:active{transform:translateY(1px)}
+      .result-card{background:#fff!important;border:1px solid var(--hvac-line)!important;border-left:3px solid var(--hvac-accent)!important;border-radius:.4rem!important;box-shadow:none!important}
+      [class*="bg-blue-50"],[class*="bg-green-50"],[class*="bg-purple-50"],[class*="bg-orange-50"],[class*="bg-gray-50"]{background:#f7fafb!important}
+      [class*="border-blue"],[class*="border-green"],[class*="border-purple"],[class*="border-orange"]{border-color:var(--hvac-line)!important}
+      .text-blue-600,.text-green-600,.text-purple-600,.text-orange-600{color:var(--hvac-accent)!important;font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+      .font-mono{font-family:'IBM Plex Mono',monospace!important;font-variant-numeric:tabular-nums}
+      .text-gray-400{color:#71838b!important}.text-gray-600,.text-gray-700{color:var(--hvac-muted)!important}.text-gray-800{color:var(--hvac-ink)!important}
+      @media(max-width:768px){.max-w-7xl{padding:1.25rem .85rem 3rem}.max-w-7xl>div:first-child>div{gap:1rem!important}.max-w-7xl>div:first-child h2{font-size:1.05rem!important}body.gradient-bg:before{font-size:.62rem}}
+      @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+    </style>
 </head>
 <body class="gradient-bg min-h-screen p-4">
     <div class="max-w-6xl mx-auto">
@@ -153,13 +190,13 @@
                     
                     <div>
                         <a href="https://sites.google.com/view/dr-nuha-aljuneidi" class="text-3xl font-bold text-blue-900 leading-tight hover:text-blue-700" target="_blank" rel="noopener">Dr. Nuha Aljuneidi</a>
-                        <p class="text-xs text-gray-600 font-semibold">Interactive Engineering Tools</p>
+                        <p class="text-xs text-gray-600 font-semibold">HVAC Engineering Tools</p>
                         <p class="text-sm text-gray-700 font-bold mt-1">Dr. Nuha Aljuneidi</p>
                     </div>
                 </div>
                 
                 <div class="flex flex-col items-center justify-center">
-                    <h2 class="text-lg font-semibold text-gray-700 text-center">Interactive Psychrometric Tools</h2>
+                    <h2 class="text-lg font-semibold text-gray-700 text-center">Psychrometric Analysis Workbench</h2>
                 </div>
                 
                 <div class="flex items-center gap-2 flex-shrink-0">
@@ -173,10 +210,10 @@
         <!-- Tab Selector -->
         <div class="bg-white rounded-lg shadow-lg p-2 mb-6 flex gap-2">
             <button id="humidityTab" class="tab-active flex-1 py-3 px-4 rounded-lg font-semibold transition-all">
-                <span class="inline-block">💧</span> Humidity Calculator
+                <span class="font-mono text-xs mr-2">01</span> Humidity Properties
             </button>
             <button id="compositionTab" class="tab-inactive flex-1 py-3 px-4 rounded-lg font-semibold transition-all">
-                <span class="inline-block">🌫️</span> Air Composition Calculator
+                <span class="font-mono text-xs mr-2">02</span> Moist-Air Composition
             </button>
         </div>
 
